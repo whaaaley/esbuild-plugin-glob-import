@@ -68,7 +68,7 @@ function load (args, opts) {
         continue
       }
 
-      prev = prev[key] ?? {}
+      prev = prev[key] ??= {}
     }
   }
 
