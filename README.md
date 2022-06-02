@@ -3,6 +3,12 @@
 
 Glob imports with output that matches your dir structure.
 
+## Install
+
+```
+$ npm i esbuild-plugin-glob-import
+```
+
 ## Setup
 
 Inside your esbuild config add the plugin and configure.
