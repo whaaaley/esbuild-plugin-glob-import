@@ -11,7 +11,7 @@ $ npm i esbuild-plugin-glob-import
 
 ## Setup
 
-Add the plugin inside your esbuild options.
+Add the plugin to your esbuild options.
 
 ```js
 import globImport from 'esbuild-plugin-glob-import'
