@@ -14,10 +14,12 @@ $ npm i esbuild-plugin-glob-import
 Add the plugin inside your esbuild options.
 
 ```js
+import globImport from 'esbuild-plugin-glob-import'
+
 esbuild.buildSync({
   // ...
   plugins: [
-    globImports()
+    globImport()
   ]
 })
 ```
