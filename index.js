@@ -50,7 +50,7 @@ function load (args, opts) {
 
     arr.shift()
 
-    if (opts.default && arr[arr.length - 1] === opts.default) {
+    if (opts.entryPoint && arr[arr.length - 1] === opts.entryPoint) {
       arr.pop()
     }
 
