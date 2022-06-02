@@ -15,7 +15,7 @@ export default function (opts) {
     name: namespace,
     setup (build) {
       build.onResolve({ filter }, resolve)
-      build.onLoad({ filter }, args => load(args, opts))
+      build.onLoad({ filter, namespace }, args => load(args, opts))
     }
   }
 }
