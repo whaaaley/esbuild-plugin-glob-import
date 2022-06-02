@@ -1,7 +1,7 @@
 {
   "name": "esbuild-plugin-glob-import",
   "version": "0.1.0",
-  "description": "Glob imports with output that matches your dir structure.",
+  "description": "Glob imports with output that matches your file structure.",
   "keywords": [
     "esbuild",
     "plugin",
