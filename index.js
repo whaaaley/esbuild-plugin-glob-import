@@ -2,17 +2,15 @@
 import path from 'node:path'
 import glob from 'fast-glob'
 
-const options = {
-  filter: /\*/,
-  namespace: 'plugin-glob-import'
-}
+const filter = /\*/
+const namespace = 'plugin-glob-imports'
 
-export default function (pluginOptions) {
+export default function (opts) {
   return {
-    name: 'plugin-glob-import',
+    name: namespace,
     setup (build) {
-      build.onResolve(options, resolve)
-      build.onLoad(options, args => load(args, pluginOptions))
+      build.onResolve({ filter }, resolve)
+      build.onLoad({ filter }, args => load(args, opts))
     }
   }
 }
@@ -29,8 +27,8 @@ function resolve (args) {
   }
 
   return {
+    namespace,
     path: args.path,
-    namespace: 'plugin-glob-import',
     pluginData: {
       resolveDir: args.resolveDir,
       resolvePaths
