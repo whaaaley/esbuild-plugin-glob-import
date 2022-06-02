@@ -1,45 +1,64 @@
 
 # esbuild-plugin-glob-import
 
-Glob imports with output that matches your dir structure.
+Glob imports with output that matches your file structure.
 
 ## Install
 
-```
+```sh
 $ npm i esbuild-plugin-glob-import
 ```
 
 ## Setup
 
-Inside your esbuild config add the plugin and configure.
+Add the plugin inside your esbuild options.
 
 ```js
 esbuild.buildSync({
   // ...
   plugins: [
-    globImports({
-      // nothing yet...
-    })
+    globImports()
   ]
 })
 ```
 
-## Plugin Options
+## Options
 
 ```js
 {
-  default: '' // (Optional) Filename of a dir's entrypoint.
+  entryPoint: 'index.js' // (Optional) Filename of a directory's default entry point.
+  camelCase: true // (Optional) Removes file extensions and converts filenames to camel case.
 }
 ```
 
-## Example with default
+## Example with default options
 
-In this example the option `default` is set to `index.js` to prune imported modules.
+File structure:
+
+```
+/pages
+  /home
+    home.css
+    index.js
+  /about
+    /content
+      summary.js
+      history.js
+    about.css
+    index.js
+  /error
+    error.css
+    index.js
+```
+
+Glob import statement:
 
 ```js
 import pages from './pages/**/index.js'
 console.log(pages)
 ```
+
+Output:
 
 ```js
 {
@@ -55,14 +74,11 @@ console.log(pages)
 }
 ```
 
-## Example without default
+## Example with `entryPoint` and `camelCase` set to `false`
 
-In this example no default was used. No assumptions are made here.
+Using the same file structure and import statement from the previous example.
 
-```js
-import pages from './pages/**/index.js'
-console.log(pages)
-```
+Output:
 
 ```js
 {
