@@ -1,0 +1,1 @@
+# esbuild-plugin-glob-import
