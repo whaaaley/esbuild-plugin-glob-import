@@ -15,6 +15,12 @@ export default function (opts) {
   }
 }
 
+function camelCase (filename) {
+  return filename
+    .replace(/\.[^.]+$/, '') // removes extension
+    .replace(/[-_](\w)/g, (match, letter) => letter.toUpperCase())
+}
+
 function resolve (args) {
   const resolvePaths = []
   const loadpath = path.join(args.resolveDir, args.path)
@@ -57,10 +63,14 @@ function load (args, opts) {
     let prev = obj
 
     for (let i = 0; i < arr.length; i++) {
-      const key = arr[i]
+      let key = arr[i]
 
       if (typeof prev === 'string') {
         continue
+      }
+
+      if (opts.camelCase) {
+        key = camelCase(key)
       }
 
       if (i === arr.length - 1) {
