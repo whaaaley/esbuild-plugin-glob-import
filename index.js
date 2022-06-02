@@ -6,10 +6,10 @@ const filter = /\*/
 const namespace = 'plugin-glob-imports'
 
 export default function (opts) {
-  opts ??= {
-    entryPoint: 'index.js',
-    camelCase: true
-  }
+  opts ??= {}
+
+  opts.entryPoint ??= 'index.js'
+  opts.camelCase ??= true
 
   return {
     name: namespace,
