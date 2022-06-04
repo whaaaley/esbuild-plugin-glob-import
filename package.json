@@ -1,15 +1,13 @@
 {
   "name": "esbuild-plugin-glob-import",
-  "version": "0.1.1",
-  "description": "Glob imports with output that matches your file structure.",
+  "version": "0.2.0",
+  "description": "Use globs to import multiple files.",
   "keywords": [
     "esbuild",
     "plugin",
     "fast",
     "glob",
-    "import",
-    "dir",
-    "structure"
+    "import"
   ],
   "license": "ISC",
   "author": "Dustin Dowell",
