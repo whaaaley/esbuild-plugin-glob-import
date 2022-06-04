@@ -29,7 +29,7 @@ esbuild.build({
 
 + `camelCase` - truthy or falsey - If truthy, this camel cases paths and filenames and removes file extensions.
 + `entryPoint` - string or falsey - Set which file in a directory is the entry point. If `entryPoint` is a string and matches a file, that module will be set on the key of the parent directory's name. If `entryPoint` is falsey all matching files will be imported and included in an object on keys of those file's names.
-+ `entryPointMatch` - function or null - Determine which file in a directory is the entry point. This function is called for every file imported using a glob. It receives the filepath as an array. Return truthy if the path is an entry point and falsey if not.
++ `entryPointMatch` - function or nullish - Determine which file in a directory is the entry point. This function is called for every file imported using a glob. It receives the filepath as an array. Return truthy if the path is an entry point and falsey if not.
 
 ## Example with default options
 
