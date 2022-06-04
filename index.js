@@ -8,8 +8,9 @@ const namespace = 'plugin-glob-imports'
 export default function (opts) {
   opts ??= {}
 
-  opts.entryPoint ??= 'index.js'
   opts.camelCase ??= true
+  opts.entryPoint ??= 'index.js'
+  opts.entryPointMatch ??= arr => arr[arr.length - 1] === opts.entryPoint
 
   return {
     name: namespace,
@@ -61,7 +62,7 @@ function load (args, opts) {
 
     arr.shift()
 
-    if (opts.entryPoint && arr[arr.length - 1] === opts.entryPoint) {
+    if (opts.entryPointMatch?.(arr)) {
       arr.pop()
     }
 
