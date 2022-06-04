@@ -1,7 +1,7 @@
 
 # esbuild-plugin-glob-import
 
-Glob imports with output that matches your file structure.
+Use globs to import multiple files.
 
 ## Install
 
@@ -14,9 +14,10 @@ $ npm i esbuild-plugin-glob-import
 Add the plugin to your esbuild options.
 
 ```js
+import esbuild from 'esbuild'
 import globImport from 'esbuild-plugin-glob-import'
 
-esbuild.buildSync({
+esbuild.build({
   // ...
   plugins: [
     globImport()
@@ -26,14 +27,21 @@ esbuild.buildSync({
 
 ## Options
 
-```js
-{
-  entryPoint: 'index.js' // (Optional) Filename of a directory's default entry point.
-  camelCase: true // (Optional) Removes file extensions and converts filenames to camel case.
-}
-```
++ `camelCase` - truthy or falsey - If truthy, this camel cases paths and filenames and removes file extensions.
++ `entryPoint` - string or falsey - Set which file in a directory is the entry point. If `entryPoint` is a string and matches a file, that module will be set on the key of the parent directory's name. If `entryPoint` is falsey all matching files will be imported and included in an object on keys of those file's names.
++ `entryPointMatch` - function or null - Determine which file in a directory is the entry point. This function is called for every file imported using a glob. It receives the filepath as an array. Return truthy if the path is an entry point and falsey if not.
 
 ## Example with default options
+
+Options:
+
+```js
+const opts = {
+  camelCase: true,
+  entryPoint: 'index.js',
+  entryPointMatch: arr => arr[arr.length - 1] === opts.entryPoint
+}
+```
 
 File structure:
 
@@ -76,9 +84,19 @@ Output:
 }
 ```
 
-## Example with `entryPoint` and `camelCase` set to `false`
+## Alternative Example
 
-Using the same file structure and import statement from the previous example.
+Using the same file structure and import statement from the previous example but with different options.
+
+Options:
+
+```js
+const opts = {
+  camelCase: false,
+  entryPoint: false,
+  entryPointMatch: null
+}
+```
 
 Output:
 
