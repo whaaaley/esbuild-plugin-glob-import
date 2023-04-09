@@ -9,7 +9,7 @@
     "glob",
     "import"
   ],
-  "license": "ISC",
+  "license": "MIT",
   "author": "Dustin Dowell",
   "type": "module",
   "main": "index.js",
