@@ -5,26 +5,25 @@ import glob from 'fast-glob'
 const filter = /\*/
 const namespace = 'plugin-glob-imports'
 
-export default function (opts) {
-  opts ??= {}
+export default function globImportPlugin (options) {
+  options ??= {}
 
-  opts.camelCase ??= true
-  opts.entryPoint ??= 'index.js'
-  opts.entryPointMatch ??= arr => arr[arr.length - 1] === opts.entryPoint
+  options.entryPoint ??= 'index'
+  options.entryPointMatch ??= arr => arr[arr.length - 1] === options.entryPoint
+
+  options.camelCase ??= true
+  options.removeExtensions ??= true
+
+  options.defaultExports ??= true
+  options.namedExports ??= true
 
   return {
     name: namespace,
     setup (build) {
       build.onResolve({ filter }, resolve)
-      build.onLoad({ filter, namespace }, args => load(args, opts))
+      build.onLoad({ filter, namespace }, args => load(args, options))
     }
   }
-}
-
-function camelCase (filename) {
-  return filename
-    .replace(/\.[^.]+$/, '') // removes extension
-    .replace(/[-_](\w)/g, (match, letter) => letter.toUpperCase())
 }
 
 function resolve (args) {
@@ -52,47 +51,95 @@ function load (args, opts) {
   const pluginData = args.pluginData
   const paths = pluginData.resolvePaths
 
-  const data = []
   const obj = {}
+  const objExp = {}
+
+  let importStatements = '\n'
 
   for (let i = 0; i < paths.length; i++) {
-    const filepath = paths[i]
+    let filepath = paths[i]
+
+    // replace all non-alphanumeric characters with underscores
+    // except for forward slashes and dots
+    filepath = filepath.replace(/[^a-zA-Z0-9./]/g, '_')
+
+    // remove file extensions
+    if (opts.removeExtensions) {
+      filepath = filepath.replace(/\.[^.]+$/, '')
+    }
+
     const arr = filepath.split('/')
-    const name = '_module' + i
 
     arr.shift()
 
-    if (opts.entryPointMatch?.(arr)) {
+    // if the result of entryPointMatch is truthy, remove the last element
+    // the directory key will now contain the module instead of the filename
+    if (opts.entryPointMatch(arr)) {
       arr.pop()
     }
 
     let prev = obj
+    let prevExp = objExp
 
-    for (let i = 0; i < arr.length; i++) {
-      let key = arr[i]
+    for (let j = 0; j < arr.length; j++) {
+      let key = arr[j]
 
       if (typeof prev === 'string') {
         continue
       }
 
-      if (opts.camelCase) {
-        key = camelCase(key)
-      }
+      // match the last item in the array, this should be the filename
+      if (j === arr.length - 1) {
+        const list = []
 
-      if (i === arr.length - 1) {
-        data.push(`import ${prev[key] = name} from './${filepath}'`)
-        continue
+        // convert underscores to camel case
+        if (opts.camelCase) {
+          key = key.replace(/_([a-z])/g, match => match[1].toUpperCase())
+        }
+
+        if (opts.defaultExports) {
+          list.push(prev[key] = `_mod${i}`)
+        }
+
+        if (opts.namedExports) {
+          prevExp[key] = `_obj${i}`
+          list.push(`* as _obj${i}`)
+        }
+
+        importStatements += `import ${list.join(', ')} from './${filepath}'\n`
       }
 
       prev = prev[key] ??= {}
+      prevExp = prevExp[key] ??= {}
     }
   }
 
-  let output = JSON.stringify(obj)
-  output = output.replace(/"_module\d+"/g, match => match.slice(1, -1))
+  let result = importStatements
+
+  if (opts.defaultExports) {
+    result += '\nexport default '
+    result += JSON.stringify(obj, null, 2)
+      .replace(/".+?"/g, match => match.slice(1, -1))
+    result += '\n'
+  }
+
+  if (opts.namedExports) {
+    for (const key in objExp) {
+      const value = JSON.stringify(objExp[key], null, 2)
+        .replace(/".+?"/g, match => match.slice(1, -1))
+
+      result += `\nexport const ${key} = ${value}`
+
+      if (typeof objExp[key] === 'object') {
+        result += '\n'
+      }
+    }
+
+    result += '\n'
+  }
 
   return {
     resolveDir: pluginData.resolveDir,
-    contents: data.join('\n') + '\nexport default ' + output
+    contents: result
   }
 }
